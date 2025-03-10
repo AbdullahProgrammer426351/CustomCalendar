@@ -18,8 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import com.custom.magic.calendar.ui.CalendarView
 import com.custom.magic.calendar.Event
-import java.time.LocalDate
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
@@ -41,21 +42,23 @@ class MainActivity : AppCompatActivity() {
         // Set Compose content
         composeView.setContent {
             MaterialTheme {
-                val selectedDate = viewModel.selectedDate.observeAsState(LocalDate.now())
+                val selectedDate = viewModel.selectedDate.observeAsState(Date())
 
                 val events = remember {
                     listOf(
                         Event(
-                            date = LocalDate.now().plusDays(2),
+                            date = Date(System.currentTimeMillis() + 2 * 24 * 60 * 60 * 1000), // Add 2 days
                             eventColor = Color.Red,
                             icon = R.drawable.ic_launcher_background
                         ),
                         Event(
-                            date = LocalDate.now().plusDays(5),
+                            date = Date(System.currentTimeMillis() + 5 * 24 * 60 * 60 * 1000), // Add 5 days
                             eventColor = Color.Green
                         )
                     )
                 }
+
+
 
                 Column(
                     modifier = Modifier
@@ -64,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    com.custom.magic.calendar.CalendarView(selectedDate.value, events) { newDate ->
+                    CalendarView(selectedDate.value, events) { newDate ->
                         viewModel.updateDate(newDate) // Ensure XML is updated
                     }
 

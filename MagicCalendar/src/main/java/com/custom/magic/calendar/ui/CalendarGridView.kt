@@ -1,4 +1,4 @@
-package com.custom.magic.calendar
+package com.custom.magic.calendar.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import java.time.LocalDate
+import com.custom.magic.calendar.Event
+import org.threeten.bp.LocalDate
 
 @Composable
 fun CalendarGridView(

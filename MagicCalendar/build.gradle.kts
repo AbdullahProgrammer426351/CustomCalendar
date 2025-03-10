@@ -8,10 +8,10 @@ plugins {
 
 android {
     namespace = "com.custom.magic.calendar"
-    compileSdk = 34 // Use the latest stable version, not 35
+    compileSdk = 35
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 23
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -62,6 +62,10 @@ dependencies {
     implementation("androidx.compose.material:material:1.7.8")
     implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+
+
+    // locale date for prev versions
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.8")
 }
 
 publishing {

@@ -1,4 +1,4 @@
-package com.custom.magic.calendar
+package com.custom.magic.calendar.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,7 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import java.time.LocalDate
+import com.custom.magic.calendar.Event
+import org.threeten.bp.LocalDate
 
 @Composable
 fun CalendarDayView(
