@@ -26,6 +26,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import com.custom.magic.calendar.sealed.CalendarIcon
+import com.custom.magic.calendar.sealed.HeaderStyle
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
@@ -34,59 +36,46 @@ import java.util.Locale
 
 @Composable
 fun CalendarView(
-    selectedDate: Date, // Takes java.util.Date as input
+    selectedDate: Date,
     events: List<Event>,
+    headerStyle: HeaderStyle = HeaderStyle.TitleInCenter,
+    prevIcon: CalendarIcon = CalendarIcon.Vector(Icons.AutoMirrored.Filled.ArrowBack),
+    nextIcon: CalendarIcon = CalendarIcon.Vector(Icons.AutoMirrored.Filled.ArrowForward),
     accentColor: Color = Color.Black,
     selectionColor: Color = Color.Blue,
-    onDateSelected: (Date) -> Unit // Returns java.util.Date
+    onDateSelected: (Date) -> Unit
 ) {
     val startPage = 500
     val pagerState = rememberPagerState(
         initialPage = startPage,
-        initialPageOffsetFraction = 0f, // Default to no offset
-        pageCount = { 1000 } // Use a lambda to provide the page count dynamically
+        initialPageOffsetFraction = 0f,
+        pageCount = { 1000 }
     )
     val coroutineScope = rememberCoroutineScope()
 
-    // Convert Date to LocalDate
     val selectedLocalDate = remember(selectedDate) { selectedDate.toLocalDate() }
     val currentMonth = remember { mutableStateOf(selectedLocalDate.withDayOfMonth(1)) }
 
-    // Ensure month updates when swiping
     LaunchedEffect(pagerState.currentPage) {
         val newMonth = LocalDate.now().plusMonths((pagerState.currentPage - startPage).toLong())
         currentMonth.value = newMonth
-        onDateSelected(newMonth.withDayOfMonth(1).toDate()) // Convert back to Date when month changes
+        onDateSelected(newMonth.withDayOfMonth(1).toDate())
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                }
-            }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous Month", tint = accentColor)
-            }
-
-            Text(
-                text = currentMonth.value.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())),
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(8.dp)
-            )
-
-            IconButton(onClick = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                }
-            }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next Month", tint = accentColor)
-            }
-        }
+        CalendarHeader(
+            currentMonth = currentMonth.value,
+            headerStyle = headerStyle,
+            prevIcon = prevIcon,
+            nextIcon = nextIcon,
+            onPrevious = {
+                coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
+            },
+            onNext = {
+                coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+            },
+            accentColor = accentColor
+        )
 
         HorizontalPager(
             state = pagerState,
@@ -96,16 +85,8 @@ fun CalendarView(
                 selectedDate = remember { mutableStateOf(selectedLocalDate) },
                 events = events,
                 selectionColor = selectionColor,
-                onDateSelected = { newDate ->
-                    onDateSelected(newDate.toDate()) // Convert LocalDate to Date before returning
-                }
+                onDateSelected = { newDate -> onDateSelected(newDate.toDate()) }
             )
         }
     }
 }
-
-
-
-
-
-
