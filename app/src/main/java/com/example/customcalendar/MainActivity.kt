@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
@@ -30,8 +31,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.custom.magic.calendar.ui.CalendarView
 import com.custom.magic.calendar.Event
 import com.custom.magic.calendar.sealed.CalendarIcon
+import com.custom.magic.calendar.sealed.CircleType
 import com.custom.magic.calendar.sealed.EventIcon
+import com.custom.magic.calendar.sealed.EventIndicator
 import com.custom.magic.calendar.sealed.IconPosition
+import com.custom.magic.calendar.sealed.RectangleType
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
@@ -73,7 +77,8 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 },
                                 pos = IconPosition.Center
-                            )
+                            ),
+                            indicator = EventIndicator.Rectangle(Color.Magenta, strokeWidth = 2.dp, type = RectangleType.Dotted)
                         ),
                         Event(
                             date = Date(System.currentTimeMillis() + 3 * 24 * 60 * 60 * 1000),
