@@ -26,9 +26,13 @@ fun CalendarGridView(
     selectedDateBoxStyle: DateBoxStyle,
     activeTextColor: Color,
     inactiveTextColor: Color,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    isExpanded: Boolean,
+    selectedRowIndex: Int
 ) {
     val weeks = remember(selectedDate.value) { getWeeksInMonth(selectedDate.value) }
+    // Show one row when collapsed, full grid when expanded
+    val displayWeeks = if (isExpanded) weeks else listOf(weeks[selectedRowIndex])
 
     Column(modifier = Modifier.fillMaxWidth()) {
         // Day headers (already working fine)
@@ -44,7 +48,7 @@ fun CalendarGridView(
         }
 
         // Date grid with evenly distributed width
-        weeks.forEach { week ->
+        displayWeeks.forEach { week ->
             Row(modifier = Modifier.fillMaxWidth()) {
                 week.forEach { date ->
                     Box(

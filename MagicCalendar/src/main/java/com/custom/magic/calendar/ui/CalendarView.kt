@@ -1,7 +1,12 @@
 package com.custom.magic.calendar.ui
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,8 +21,16 @@ import com.custom.magic.calendar.toDate
 import com.custom.magic.calendar.toLocalDate
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import com.custom.magic.calendar.sealed.CalendarIcon
 import com.custom.magic.calendar.sealed.HeaderStyle
 import com.custom.magic.calendar.sealed.DateBoxStyle
@@ -49,8 +62,24 @@ fun CalendarView(
     )
     val coroutineScope = rememberCoroutineScope()
 
-    val selectedLocalDate = remember(selectedDate) { selectedDate.toLocalDate() }
-    val currentMonth = remember { mutableStateOf(selectedLocalDate.withDayOfMonth(1)) }
+    val selectedLocalDate = remember(selectedDate) { mutableStateOf(selectedDate.toLocalDate()) }
+    val currentMonth = remember { mutableStateOf(selectedLocalDate.value.withDayOfMonth(1)) }
+    val isExpanded = remember { mutableStateOf(true) }
+
+    // Find weeks in the current month
+    val weeks = remember(currentMonth.value) { getWeeksInMonth(currentMonth.value) }
+    val totalRows = weeks.size
+
+    // Find the row containing the selected date
+    val selectedRowIndex = weeks.indexOfFirst { week -> week.contains(selectedLocalDate.value) }
+    val visibleRows = if (isExpanded.value) totalRows else 1
+
+    // Calculate dynamic height (each row has fixed height)
+    val rowHeight = 50.dp
+    val targetHeight by animateDpAsState(
+        targetValue = rowHeight * visibleRows, // ✅ Use .times operator on Dp
+        label = ""
+    )
 
     LaunchedEffect(pagerState.currentPage) {
         val newMonth = LocalDate.now().plusMonths((pagerState.currentPage - startPage).toLong())
@@ -73,21 +102,46 @@ fun CalendarView(
             accentColor = headerAccentColor
         )
 
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxWidth(),
-            userScrollEnabled = swipeEnabled
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(targetHeight)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White),
+            contentAlignment = Alignment.TopCenter
         ) {
-            CalendarGridView(
-                selectedDate = remember { mutableStateOf(selectedLocalDate) },
-                events = events,
-                selectedDayTextColor = selectedDayTextColor,
-                dateBoxStyle = dateBoxStyle,
-                selectedDateBoxStyle = selectedDateBoxStyle,
-                activeTextColor = activeTextColor,
-                inactiveTextColor = inactiveTextColor,
-                onDateSelected = { newDate -> onDateSelected(newDate.toDate()) }
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth(),
+                userScrollEnabled = swipeEnabled
+            ) {
+                CalendarGridView(
+                    selectedDate = selectedLocalDate,
+                    events = events,
+                    selectedDayTextColor = selectedDayTextColor,
+                    dateBoxStyle = dateBoxStyle,
+                    selectedDateBoxStyle = selectedDateBoxStyle,
+                    activeTextColor = activeTextColor,
+                    inactiveTextColor = inactiveTextColor,
+                    onDateSelected = { newDate -> onDateSelected(newDate.toDate()) },
+                    isExpanded = isExpanded.value,
+                    selectedRowIndex = selectedRowIndex // 👈 Pass selected row
+                )
+            }
+        }
+
+        // Expand/Collapse Button
+        IconButton(
+            onClick = { isExpanded.value = !isExpanded.value },
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Icon(
+                imageVector = if (isExpanded.value) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                contentDescription = "Expand/Collapse",
+                tint = headerAccentColor
             )
         }
     }
 }
+
+
