@@ -38,6 +38,7 @@ fun CalendarView(
     dateBoxStyle: DateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray),
     selectedDateBoxStyle: DateBoxStyle = DateBoxStyle.FilledRectangle(color = Color.Black),
     selectedDayTextColor: Color = Color.White,
+    swipeEnabled: Boolean = true,
     onDateSelected: (Date) -> Unit
 ) {
     val startPage = 500
@@ -74,7 +75,8 @@ fun CalendarView(
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            userScrollEnabled = swipeEnabled
         ) {
             CalendarGridView(
                 selectedDate = remember { mutableStateOf(selectedLocalDate) },

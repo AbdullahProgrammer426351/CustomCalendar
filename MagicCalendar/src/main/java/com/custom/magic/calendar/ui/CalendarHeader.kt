@@ -2,6 +2,7 @@ package com.custom.magic.calendar.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,7 +69,12 @@ fun CalendarHeader(
             IconButton(onClick = onNext) { RenderIcon(nextIcon, accentColor) }
         }
 
+        HeaderStyle.WithoutButtons -> Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+            CalendarTitle(currentMonth)
+        }
+
         is HeaderStyle.Custom -> headerStyle.content()
+
     }
 }
 

@@ -34,6 +34,7 @@ import com.custom.magic.calendar.sealed.CalendarIcon
 import com.custom.magic.calendar.sealed.CircleType
 import com.custom.magic.calendar.sealed.EventIcon
 import com.custom.magic.calendar.sealed.EventIndicator
+import com.custom.magic.calendar.sealed.HeaderStyle
 import com.custom.magic.calendar.sealed.IconPosition
 import com.custom.magic.calendar.sealed.RectangleType
 import java.util.Date
@@ -103,20 +104,11 @@ class MainActivity : AppCompatActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    CalendarView(selectedDate.value, events, prevIcon = CalendarIcon.Custom {
-                        Box(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .background(Color.Red, shape = CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = "<", color = Color.White)
-                        }
-                    },
-                        nextIcon = CalendarIcon.Vector(Icons.AutoMirrored.Filled.ArrowBack),
+                    CalendarView(selectedDate.value, events,
                         activeTextColor = Color.Red,
                         inactiveTextColor = Color.Yellow,
-                        selectedDayTextColor = Color.Green) { newDate ->
+                        selectedDayTextColor = Color.Green,
+                        headerStyle = HeaderStyle.WithoutButtons) { newDate ->
                         viewModel.updateDate(newDate) // Ensure XML is updated
                     }
 

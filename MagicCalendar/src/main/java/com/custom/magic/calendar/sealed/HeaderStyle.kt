@@ -6,5 +6,6 @@ sealed class HeaderStyle {
     object TitleOnStart : HeaderStyle()
     object TitleOnEnd : HeaderStyle()
     object TitleInCenter : HeaderStyle()
+    object WithoutButtons : HeaderStyle()
     data class Custom(val content: @Composable () -> Unit) : HeaderStyle()
 }
