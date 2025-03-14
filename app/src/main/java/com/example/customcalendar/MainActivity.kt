@@ -113,7 +113,10 @@ class MainActivity : AppCompatActivity() {
                             Text(text = "<", color = Color.White)
                         }
                     },
-                        nextIcon = CalendarIcon.Vector(Icons.AutoMirrored.Filled.ArrowBack),) { newDate ->
+                        nextIcon = CalendarIcon.Vector(Icons.AutoMirrored.Filled.ArrowBack),
+                        activeTextColor = Color.Red,
+                        inactiveTextColor = Color.Yellow,
+                        selectedDayTextColor = Color.Green) { newDate ->
                         viewModel.updateDate(newDate) // Ensure XML is updated
                     }
 

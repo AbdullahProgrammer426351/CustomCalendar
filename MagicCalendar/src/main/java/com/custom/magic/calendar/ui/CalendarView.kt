@@ -1,15 +1,8 @@
 package com.custom.magic.calendar.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +11,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.custom.magic.calendar.Event
 import com.custom.magic.calendar.toDate
 import com.custom.magic.calendar.toLocalDate
@@ -28,11 +20,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import com.custom.magic.calendar.sealed.CalendarIcon
 import com.custom.magic.calendar.sealed.HeaderStyle
+import com.custom.magic.calendar.sealed.DateBoxStyle
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
 import java.util.Date
-import java.util.Locale
 
 @Composable
 fun CalendarView(
@@ -41,8 +32,12 @@ fun CalendarView(
     headerStyle: HeaderStyle = HeaderStyle.TitleInCenter,
     prevIcon: CalendarIcon = CalendarIcon.Vector(Icons.AutoMirrored.Filled.ArrowBack),
     nextIcon: CalendarIcon = CalendarIcon.Vector(Icons.AutoMirrored.Filled.ArrowForward),
-    accentColor: Color = Color.Black,
-    selectionColor: Color = Color.Blue,
+    headerAccentColor: Color = Color.Black,
+    activeTextColor: Color = Color.Black,
+    inactiveTextColor: Color = Color.Gray,
+    dateBoxStyle: DateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray),
+    selectedDateBoxStyle: DateBoxStyle = DateBoxStyle.FilledRectangle(color = Color.Black),
+    selectedDayTextColor: Color = Color.White,
     onDateSelected: (Date) -> Unit
 ) {
     val startPage = 500
@@ -74,7 +69,7 @@ fun CalendarView(
             onNext = {
                 coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
             },
-            accentColor = accentColor
+            accentColor = headerAccentColor
         )
 
         HorizontalPager(
@@ -84,7 +79,11 @@ fun CalendarView(
             CalendarGridView(
                 selectedDate = remember { mutableStateOf(selectedLocalDate) },
                 events = events,
-                selectionColor = selectionColor,
+                selectedDayTextColor = selectedDayTextColor,
+                dateBoxStyle = dateBoxStyle,
+                selectedDateBoxStyle = selectedDateBoxStyle,
+                activeTextColor = activeTextColor,
+                inactiveTextColor = inactiveTextColor,
                 onDateSelected = { newDate -> onDateSelected(newDate.toDate()) }
             )
         }

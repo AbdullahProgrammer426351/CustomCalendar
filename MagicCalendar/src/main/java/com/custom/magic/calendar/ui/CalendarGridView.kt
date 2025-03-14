@@ -14,13 +14,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.custom.magic.calendar.Event
+import com.custom.magic.calendar.sealed.DateBoxStyle
 import org.threeten.bp.LocalDate
 
 @Composable
 fun CalendarGridView(
     selectedDate: MutableState<LocalDate>,
     events: List<Event>,
-    selectionColor: Color,
+    selectedDayTextColor: Color,
+    dateBoxStyle: DateBoxStyle,
+    selectedDateBoxStyle: DateBoxStyle,
+    activeTextColor: Color,
+    inactiveTextColor: Color,
     onDateSelected: (LocalDate) -> Unit
 ) {
     val weeks = remember(selectedDate.value) { getWeeksInMonth(selectedDate.value) }
@@ -52,7 +57,11 @@ fun CalendarGridView(
                             isSelected = selectedDate.value == date,
                             events = events.filter { it.date == date },
                             isInCurrentMonth = date.month == selectedDate.value.month,
-                            selectionColor = selectionColor
+                            selectedDayTextColor = selectedDayTextColor,
+                            dateBoxStyle = dateBoxStyle,
+                            selectedDateBoxStyle = selectedDateBoxStyle,
+                            activeTextColor = activeTextColor,
+                            inactiveTextColor = inactiveTextColor
                         ) {
                             selectedDate.value = date
                             onDateSelected(date)

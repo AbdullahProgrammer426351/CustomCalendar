@@ -5,10 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -36,6 +34,7 @@ import com.custom.magic.calendar.sealed.EventIcon
 import com.custom.magic.calendar.sealed.EventIndicator
 import com.custom.magic.calendar.sealed.IconPosition
 import com.custom.magic.calendar.sealed.RectangleType
+import com.custom.magic.calendar.sealed.DateBoxStyle
 import org.threeten.bp.LocalDate
 
 @Composable
@@ -44,7 +43,11 @@ fun CalendarDayView(
     isSelected: Boolean,
     events: List<Event>,
     isInCurrentMonth: Boolean,
-    selectionColor: Color,
+    selectedDayTextColor: Color,
+    dateBoxStyle: DateBoxStyle,
+    selectedDateBoxStyle: DateBoxStyle,
+    activeTextColor: Color,
+    inactiveTextColor: Color,
     onClick: () -> Unit,
 ) {
     Box(
@@ -57,18 +60,12 @@ fun CalendarDayView(
         Box(
             modifier = Modifier
                 .size(38.dp)
-                .clip(CircleShape)
-                .background(Color.LightGray)
-                .border(
-                    width = if (isSelected) 2.dp else 0.dp,
-                    color = if (isSelected) selectionColor else Color.Transparent,
-                    shape = CircleShape
-                ),
+                .then(applySimpleDayStyle(if (isSelected) selectedDateBoxStyle else dateBoxStyle)),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = date.dayOfMonth.toString(),
-                color = if (isInCurrentMonth) Color.Black else Color.Gray
+                color = if (isSelected) selectedDayTextColor else{ if (isInCurrentMonth) activeTextColor else inactiveTextColor}
             )
         }
 
@@ -174,6 +171,46 @@ fun RenderEventIndicator(indicator: EventIndicator, modifier: Modifier = Modifie
     }
 }
 
+fun applySimpleDayStyle(style: DateBoxStyle): Modifier {
+    return when (style) {
+        is DateBoxStyle.FilledCircle -> Modifier
+            .clip(CircleShape)
+            .background(style.color)
+
+        is DateBoxStyle.FilledRectangle -> Modifier
+            .clip(RoundedCornerShape(style.cornerRadius))
+            .background(style.color)
+
+        is DateBoxStyle.BorderedCircle -> Modifier
+            .clip(CircleShape)
+            .border(style.borderWidth, style.borderColor, CircleShape)
+
+        is DateBoxStyle.BorderedRectangle -> Modifier
+            .clip(RoundedCornerShape(style.cornerRadius))
+            .border(style.borderWidth, style.borderColor, RoundedCornerShape(style.cornerRadius))
+
+        is DateBoxStyle.DottedCircle -> Modifier
+            .clip(CircleShape)
+            .border(
+                width = style.dotSize,
+                brush = Brush.radialGradient(listOf(style.dotColor, Color.Transparent)),
+                shape = CircleShape
+            )
+
+        is DateBoxStyle.DottedRectangle -> Modifier
+            .clip(RoundedCornerShape(style.cornerRadius))
+            .border(
+                width = style.dotSize,
+                brush = Brush.radialGradient(listOf(style.dotColor, Color.Transparent)),
+                shape = RoundedCornerShape(style.cornerRadius)
+            )
+
+        is DateBoxStyle.Custom -> Modifier // ⚠️ Do nothing here (handled separately)
+    }
+}
+
+
+
 
 
 @Composable
@@ -213,7 +250,11 @@ private fun DayPrev() {
                 Event(date = LocalDate.now(), eventColor = Color.Red)
             ),
             isInCurrentMonth = true,
-            selectionColor = Color.Blue
+            selectedDayTextColor = Color.White,
+            dateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray),
+            selectedDateBoxStyle = DateBoxStyle.FilledCircle(color = Color.Black),
+            activeTextColor = Color.Black,
+            inactiveTextColor = Color.Gray
         ) { }
     }
 }
