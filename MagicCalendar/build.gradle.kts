@@ -73,9 +73,9 @@ publishing {
         register<MavenPublication>("release") { // ✅ Correct Kotlin DSL syntax
             afterEvaluate{
                 from(components["release"])
-//                groupId = "com.custom.magic.calendar"
-//                artifactId = "magic-calendar"
-//                version = "1.0"
+                groupId = "com.custom.magic.calendar"
+                artifactId = "magic-calendar"
+                version = "1.0.04"
             }
         }
     }
