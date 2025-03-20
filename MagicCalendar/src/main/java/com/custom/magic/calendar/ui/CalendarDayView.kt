@@ -6,10 +6,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -23,8 +26,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,42 +57,66 @@ fun CalendarDayView(
 ) {
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(LocalConfiguration.current.screenWidthDp.dp / 7)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        // Background Circle
+        // Step 1: Background Box (Ensures selected/unselected styling)
         Box(
             modifier = Modifier
                 .size(38.dp)
                 .then(applySimpleDayStyle(if (isSelected) selectedDateBoxStyle else dateBoxStyle)),
             contentAlignment = Alignment.Center
         ) {
+            // Step 2: Draw indicators that should be in the middle layer (e.g., Circle, Rectangle, Ring)
+            events.firstOrNull()?.indicator?.let { indicator ->
+                if (indicator is EventIndicator.Rectangle || indicator is EventIndicator.Circle || indicator is EventIndicator.Ring) {
+                    RenderEventIndicator(
+                        indicator,
+                        modifier = Modifier.matchParentSize()
+                    )
+                }
+            }
+
+            // Step 3: Draw the date text above the indicators
             Text(
                 text = date.dayOfMonth.toString(),
-                color = if (isSelected) selectedDayTextColor else{ if (isInCurrentMonth) activeTextColor else inactiveTextColor}
+                color = if (isSelected) selectedDayTextColor else {
+                    if (isInCurrentMonth) activeTextColor else inactiveTextColor
+                }
             )
         }
 
-        // Render first event's icon if available
+        // Step 4: Draw event icons (These are separate from background/indicators)
         events.firstOrNull()?.icon?.let { icon ->
             val iconModifier = when (icon.position) {
-                IconPosition.TopStart -> Modifier.align(Alignment.TopStart).padding(4.dp)
-                IconPosition.TopEnd -> Modifier.align(Alignment.TopEnd).padding(4.dp)
-                IconPosition.BottomStart -> Modifier.align(Alignment.BottomStart).padding(4.dp)
-                IconPosition.BottomEnd -> Modifier.align(Alignment.BottomEnd).padding(4.dp)
+                IconPosition.TopStart -> Modifier
+                    .align(Alignment.TopStart)
+                    .padding(4.dp)
+                IconPosition.TopEnd -> Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(4.dp)
+                IconPosition.BottomStart -> Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(4.dp)
+                IconPosition.BottomEnd -> Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(4.dp)
                 IconPosition.Center -> Modifier.align(Alignment.Center)
             }
 
             RenderEventIcon(icon, iconModifier)
         }
 
-        // Render event indicator
+        // Step 5: Draw small indicators separately (Dot, Badge, Bar) in correct positions
         events.firstOrNull()?.indicator?.let { indicator ->
-            RenderEventIndicator(
-                indicator,
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 4.dp)
-            )
+            if (indicator is EventIndicator.Dot || indicator is EventIndicator.Badge || indicator is EventIndicator.Bar || indicator is EventIndicator.Custom) {
+                RenderEventIndicator(
+                    indicator,
+                    modifier = Modifier
+                        .align(if (indicator is EventIndicator.Badge) Alignment.TopEnd else Alignment.BottomCenter)
+                )
+            }
         }
     }
 }
@@ -99,45 +128,50 @@ fun RenderEventIndicator(indicator: EventIndicator, modifier: Modifier = Modifie
         // 🔴 Dot Indicator
         is EventIndicator.Dot -> Box(
             modifier = modifier
-                .size(6.dp)
                 .clip(CircleShape)
                 .background(indicator.color)
+                .size(6.dp)
+                .padding(0.5.dp)
+
         )
 
         // 🟢 Badge Indicator
         is EventIndicator.Badge -> Box(
             modifier = modifier
                 .clip(RoundedCornerShape(50))
-                .background(indicator.color)
-                .padding(horizontal = 6.dp, vertical = 2.dp),
-            contentAlignment = Alignment.Center
+                .background(indicator.color),
+            contentAlignment = Alignment.Center // Ensures text is centered
         ) {
             Text(
                 text = indicator.count.toString(),
                 fontSize = 10.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
+                color = Color.Green,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 6.dp)
             )
         }
+
 
         // 🟡 Bar Indicator
         is EventIndicator.Bar -> Box(
             modifier = modifier
                 .fillMaxWidth(0.5f)
                 .height(indicator.thickness)
+                .clip(RoundedCornerShape(indicator.radius))
                 .background(indicator.color)
         )
 
         // 🟠 Ring Indicator
         is EventIndicator.Ring -> Box(
             modifier = modifier
-                .size(36.dp)
+                .size(38.dp)
                 .border(width = indicator.thickness, color = indicator.color, shape = CircleShape)
         )
 
         // 🔵 Circle Indicator
         is EventIndicator.Circle -> {
-            Canvas(modifier = modifier.size(20.dp)) {
+            Canvas(modifier = modifier.size(38.dp)) {
                 when (indicator.type) {
                     CircleType.Filled -> drawCircle(color = indicator.color)
                     CircleType.Stroke -> drawCircle(color = indicator.color, style = Stroke(width = indicator.strokeWidth.toPx()))
@@ -152,7 +186,7 @@ fun RenderEventIndicator(indicator: EventIndicator, modifier: Modifier = Modifie
 
         // 🟣 Rectangle Indicator
         is EventIndicator.Rectangle -> {
-            Canvas(modifier = modifier.size(20.dp)) {
+            Canvas(modifier = modifier.size(38.dp)) {
                 when (indicator.type) {
                     RectangleType.Filled -> drawRoundRect(color = indicator.color, cornerRadius = CornerRadius(indicator.cornerRadius.toPx()))
                     RectangleType.Stroke -> drawRoundRect(color = indicator.color, style = Stroke(width = indicator.strokeWidth.toPx()), cornerRadius = CornerRadius(indicator.cornerRadius.toPx()))
@@ -209,10 +243,6 @@ fun applySimpleDayStyle(style: DateBoxStyle): Modifier {
     }
 }
 
-
-
-
-
 @Composable
 fun RenderEventIcon(eventIcon: EventIcon, modifier: Modifier) {
     when (eventIcon) {
@@ -229,32 +259,5 @@ fun RenderEventIcon(eventIcon: EventIcon, modifier: Modifier) {
         is EventIcon.Custom -> Box(modifier = modifier) {
             eventIcon.content()
         }
-    }
-}
-
-
-
-
-
-
-@Preview
-@Composable
-private fun DayPrev() {
-    Box(modifier = Modifier
-        .background(Color.White)
-        .padding(20.dp)){
-        CalendarDayView(
-            date = LocalDate.now(),
-            isSelected = true,
-            events = listOf(
-                Event(date = LocalDate.now(), eventColor = Color.Red)
-            ),
-            isInCurrentMonth = true,
-            selectedDayTextColor = Color.White,
-            dateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray),
-            selectedDateBoxStyle = DateBoxStyle.FilledCircle(color = Color.Black),
-            activeTextColor = Color.Black,
-            inactiveTextColor = Color.Gray
-        ) { }
     }
 }

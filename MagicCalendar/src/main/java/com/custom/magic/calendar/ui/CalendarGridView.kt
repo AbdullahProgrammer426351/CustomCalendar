@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -28,33 +31,33 @@ fun CalendarGridView(
     inactiveTextColor: Color,
     onDateSelected: (LocalDate) -> Unit,
     isExpanded: Boolean,
-    selectedRowIndex: Int
+    selectedRowIndex: Int,
+    listState: LazyListState // ✅ Accept LazyListState for smooth scroll
 ) {
     val weeks = remember(selectedDate.value) { getWeeksInMonth(selectedDate.value) }
-    // Show one row when collapsed, full grid when expanded
     val displayWeeks = if (isExpanded) weeks else listOf(weeks[selectedRowIndex])
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        // Day headers (already working fine)
-        Row(modifier = Modifier.fillMaxWidth()) {
-            listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat").forEach { day ->
-                Text(
-                    text = day,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
-                )
+    LazyColumn(state = listState) { // ✅ Use LazyColumn instead of Column
+        item {
+            // Day headers
+            Row(modifier = Modifier.fillMaxWidth()) {
+                listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat").forEach { day ->
+                    Text(
+                        text = day,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
-
-        // Date grid with evenly distributed width
-        displayWeeks.forEach { week ->
+        items(displayWeeks) { week ->
             Row(modifier = Modifier.fillMaxWidth()) {
                 week.forEach { date ->
                     Box(
                         modifier = Modifier
-                            .weight(1f) // Ensures equal width for all 7 days
-                            .aspectRatio(1f) // Ensures the box remains a square
+                            .weight(1f)
+                            .aspectRatio(1f)
                     ) {
                         CalendarDayView(
                             date = date,
@@ -74,8 +77,13 @@ fun CalendarGridView(
                 }
             }
         }
-
     }
+}
+
+// Helper function to preload months (simulate caching)
+fun preloadMonthData(month: LocalDate) {
+    val weeks = getWeeksInMonth(month)
+    // Store this data in cache or ViewModel (if applicable)
 }
 
 

@@ -65,7 +65,7 @@ dependencies {
 
 
     // locale date for prev versions
-    implementation("com.jakewharton.threetenabp:threetenabp:1.4.8")
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.9")
 }
 
 publishing {

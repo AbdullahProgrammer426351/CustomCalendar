@@ -1,6 +1,7 @@
 package com.custom.magic.calendar.sealed
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -8,7 +9,7 @@ import androidx.compose.ui.unit.dp
 sealed class EventIndicator {
     data class Dot(val color: Color) : EventIndicator()
     data class Badge(val color: Color, val count: Int) : EventIndicator()
-    data class Bar(val color: Color, val thickness: Dp = 2.dp) : EventIndicator()
+    data class Bar(val color: Color, val thickness: Dp = 2.dp, val radius: Dp = 8.dp) : EventIndicator()
     data class Ring(val color: Color, val thickness: Dp = 2.dp) : EventIndicator()
 
     // 🟢 Circle Variations

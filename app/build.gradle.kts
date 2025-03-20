@@ -69,5 +69,8 @@ dependencies {
     // our library
     implementation(project(":MagicCalendar"))
 
+    // locale date for prev versions
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.9")
+
 
 }

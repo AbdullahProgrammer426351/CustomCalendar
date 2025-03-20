@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +31,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.custom.magic.calendar.sealed.CalendarIcon
 import com.custom.magic.calendar.sealed.HeaderStyle
@@ -75,16 +77,21 @@ fun CalendarView(
     val visibleRows = if (isExpanded.value) totalRows else 1
 
     // Calculate dynamic height (each row has fixed height)
-    val rowHeight = 50.dp
+    val rowHeight = (LocalConfiguration.current.screenWidthDp.dp / 7)
     val targetHeight by animateDpAsState(
-        targetValue = rowHeight * visibleRows, // ✅ Use .times operator on Dp
+        targetValue = if (visibleRows == 1) (rowHeight+20.dp) * visibleRows else (rowHeight) * visibleRows,
         label = ""
     )
 
+    // Prefetch months to avoid lag when scrolling
     LaunchedEffect(pagerState.currentPage) {
         val newMonth = LocalDate.now().plusMonths((pagerState.currentPage - startPage).toLong())
         currentMonth.value = newMonth
         onDateSelected(newMonth.withDayOfMonth(1).toDate())
+
+        // Preload adjacent months
+//        preloadMonthData(LocalDate.now().plusMonths((pagerState.currentPage - startPage - 1).toLong()))
+//        preloadMonthData(LocalDate.now().plusMonths((pagerState.currentPage - startPage + 1).toLong()))
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -94,10 +101,10 @@ fun CalendarView(
             prevIcon = prevIcon,
             nextIcon = nextIcon,
             onPrevious = {
-                coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
+                coroutineScope.launch { pagerState.scrollToPage(pagerState.currentPage - 1) }
             },
             onNext = {
-                coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+                coroutineScope.launch { pagerState.scrollToPage(pagerState.currentPage + 1) }
             },
             accentColor = headerAccentColor
         )
@@ -114,7 +121,9 @@ fun CalendarView(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth(),
                 userScrollEnabled = swipeEnabled
-            ) {
+            ) { page ->
+                val listState = rememberLazyListState() // ✅ Lazy state for smooth scroll
+
                 CalendarGridView(
                     selectedDate = selectedLocalDate,
                     events = events,
@@ -125,12 +134,12 @@ fun CalendarView(
                     inactiveTextColor = inactiveTextColor,
                     onDateSelected = { newDate -> onDateSelected(newDate.toDate()) },
                     isExpanded = isExpanded.value,
-                    selectedRowIndex = selectedRowIndex // 👈 Pass selected row
+                    selectedRowIndex = selectedRowIndex,
+                    listState = listState // ✅ Pass lazy state
                 )
             }
         }
 
-        // Expand/Collapse Button
         IconButton(
             onClick = { isExpanded.value = !isExpanded.value },
             modifier = Modifier.padding(8.dp)

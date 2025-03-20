@@ -32,6 +32,7 @@ import com.custom.magic.calendar.ui.CalendarView
 import com.custom.magic.calendar.Event
 import com.custom.magic.calendar.sealed.CalendarIcon
 import com.custom.magic.calendar.sealed.CircleType
+import com.custom.magic.calendar.sealed.DateBoxStyle
 import com.custom.magic.calendar.sealed.EventIcon
 import com.custom.magic.calendar.sealed.EventIndicator
 import com.custom.magic.calendar.sealed.HeaderStyle
@@ -65,32 +66,22 @@ class MainActivity : AppCompatActivity() {
                     listOf(
                         Event(
                             date = Date(),
-                            eventColor = Color.Green,
-                            icon = EventIcon.Custom(
-                                content = {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(14.dp)
-                                            .background(Color.Yellow, shape = CircleShape),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text("!", fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                                    }
-                                },
-                                pos = IconPosition.Center
-                            ),
-                            indicator = EventIndicator.Rectangle(Color.Magenta, strokeWidth = 2.dp, type = RectangleType.Dotted)
-                        ),
-                        Event(
-                            date = Date(System.currentTimeMillis() + 3 * 24 * 60 * 60 * 1000),
                             eventColor = Color.Red,
-                            icon = EventIcon.Resource(R.drawable.ic_launcher_background, IconPosition.BottomEnd)
-                        )
-                        ,
-                        Event(
-                            date = Date(System.currentTimeMillis() + 5 * 24 * 60 * 60 * 1000),
-                            eventColor = Color.Blue,
-                            icon = EventIcon.Vector(Icons.Default.Star, IconPosition.TopStart)
+//                            indicator = EventIndicator.Circle(color = Color.Red, type = CircleType.Filled),
+                            indicator = EventIndicator.Custom(content = {
+                                Box(
+                                    modifier = Modifier
+                                        .size(38.dp)
+                                        .background(Color.Red, shape = CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ){
+                                    Text(
+                                        text = "1",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White,)
+                                }
+                            }),
                         )
                     )
                 }
@@ -105,10 +96,8 @@ class MainActivity : AppCompatActivity() {
                 ) {
 
                     CalendarView(selectedDate.value, events,
-                        activeTextColor = Color.Red,
-                        inactiveTextColor = Color.Yellow,
-                        selectedDayTextColor = Color.Green,
-                        headerStyle = HeaderStyle.WithoutButtons) { newDate ->
+//                        selectedDayTextColor = Color.Green, dateBoxStyle = DateBoxStyle.FilledRectangle(color = Color.Gray)) { newDate ->
+                        selectedDayTextColor = Color.Green, dateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray)) { newDate ->
                         viewModel.updateDate(newDate) // Ensure XML is updated
                     }
 
