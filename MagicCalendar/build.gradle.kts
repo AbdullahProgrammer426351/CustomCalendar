@@ -75,7 +75,7 @@ publishing {
                 from(components["release"])
                 groupId = "com.custom.magic.calendar"
                 artifactId = "magic-calendar"
-                version = "1.0.1"
+                version = "1.1"
             }
         }
     }
