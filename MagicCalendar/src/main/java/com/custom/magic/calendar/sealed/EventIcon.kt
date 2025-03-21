@@ -12,4 +12,3 @@ sealed class EventIcon(val position: IconPosition) {
 enum class IconPosition {
     TopStart, TopEnd, BottomStart, BottomEnd, Center
 }
-

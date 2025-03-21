@@ -67,21 +67,8 @@ class MainActivity : AppCompatActivity() {
                         Event(
                             date = Date(),
                             eventColor = Color.Red,
-//                            indicator = EventIndicator.Circle(color = Color.Red, type = CircleType.Filled),
-                            indicator = EventIndicator.Custom(content = {
-                                Box(
-                                    modifier = Modifier
-                                        .size(38.dp)
-                                        .background(Color.Red, shape = CircleShape),
-                                    contentAlignment = Alignment.Center
-                                ){
-                                    Text(
-                                        text = "1",
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.White,)
-                                }
-                            }),
+                            indicator = EventIndicator.Circle(color = Color.Red, type = CircleType.Filled),
+                            icon = EventIcon.Vector(Icons.Default.Star, IconPosition.TopEnd),
                         )
                     )
                 }

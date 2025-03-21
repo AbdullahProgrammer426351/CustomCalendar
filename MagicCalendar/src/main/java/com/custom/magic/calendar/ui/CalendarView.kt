@@ -51,7 +51,7 @@ fun CalendarView(
     activeTextColor: Color = Color.Black,
     inactiveTextColor: Color = Color.Gray,
     dateBoxStyle: DateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray),
-    selectedDateBoxStyle: DateBoxStyle = DateBoxStyle.FilledRectangle(color = Color.Black),
+    selectedDateBoxStyle: DateBoxStyle = DateBoxStyle.FilledCircle(color = Color.Blue),
     selectedDayTextColor: Color = Color.White,
     swipeEnabled: Boolean = true,
     onDateSelected: (Date) -> Unit
