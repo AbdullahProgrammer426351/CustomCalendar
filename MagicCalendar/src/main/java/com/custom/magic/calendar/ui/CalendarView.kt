@@ -23,16 +23,20 @@ import com.custom.magic.calendar.toLocalDate
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.custom.magic.calendar.data.HeaderFontStyle
 import com.custom.magic.calendar.sealed.CalendarIcon
 import com.custom.magic.calendar.sealed.HeaderStyle
 import com.custom.magic.calendar.sealed.DateBoxStyle
@@ -54,8 +58,14 @@ fun CalendarView(
     selectedDateBoxStyle: DateBoxStyle = DateBoxStyle.FilledCircle(color = Color.Blue),
     selectedDayTextColor: Color = Color.White,
     swipeEnabled: Boolean = true,
+    bgColor: Color = Color.White,
+    collapseButtonTint : Color = Color.Black,
+    headerFontStyle: HeaderFontStyle = HeaderFontStyle(
+        size = 20.sp, fontFamily = FontFamily.Default, fontWeight = FontWeight.Bold
+    ),
     onDateSelected: (Date) -> Unit
 ) {
+    val verticalSpacing = 5.dp
     val startPage = 500
     val pagerState = rememberPagerState(
         initialPage = startPage,
@@ -79,7 +89,7 @@ fun CalendarView(
     // Calculate dynamic height (each row has fixed height)
     val rowHeight = (LocalConfiguration.current.screenWidthDp.dp / 7)
     val targetHeight by animateDpAsState(
-        targetValue = if (visibleRows == 1) (rowHeight+20.dp) * visibleRows else (rowHeight) * visibleRows,
+        targetValue = if (visibleRows == 1) (rowHeight+20.dp) * visibleRows else (rowHeight + verticalSpacing) * visibleRows - verticalSpacing,
         label = ""
     )
 
@@ -106,50 +116,60 @@ fun CalendarView(
             onNext = {
                 coroutineScope.launch { pagerState.scrollToPage(pagerState.currentPage + 1) }
             },
-            accentColor = headerAccentColor
+            accentColor = headerAccentColor,
+            headerFontStyle = headerFontStyle
         )
 
-        Box(
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(targetHeight)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.White),
-            contentAlignment = Alignment.TopCenter
+            .clip(RoundedCornerShape(8.dp))
+            .background(bgColor)
         ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxWidth(),
-                userScrollEnabled = swipeEnabled
-            ) { page ->
-                val listState = rememberLazyListState() // ✅ Lazy state for smooth scroll
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp)
+                    .height(targetHeight)
+                    ,
+                contentAlignment = Alignment.TopCenter
+            ) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxWidth(),
+                    userScrollEnabled = swipeEnabled
+                ) { page ->
+                    val listState = rememberLazyListState() // ✅ Lazy state for smooth scroll
 
-                CalendarGridView(
-                    selectedDate = selectedLocalDate,
-                    events = events,
-                    selectedDayTextColor = selectedDayTextColor,
-                    dateBoxStyle = dateBoxStyle,
-                    selectedDateBoxStyle = selectedDateBoxStyle,
-                    activeTextColor = activeTextColor,
-                    inactiveTextColor = inactiveTextColor,
-                    onDateSelected = { newDate -> onDateSelected(newDate.toDate()) },
-                    isExpanded = isExpanded.value,
-                    selectedRowIndex = selectedRowIndex,
-                    listState = listState // ✅ Pass lazy state
+                    CalendarGridView(
+                        selectedDate = selectedLocalDate,
+                        events = events,
+                        selectedDayTextColor = selectedDayTextColor,
+                        dateBoxStyle = dateBoxStyle,
+                        selectedDateBoxStyle = selectedDateBoxStyle,
+                        activeTextColor = activeTextColor,
+                        inactiveTextColor = inactiveTextColor,
+                        onDateSelected = { newDate -> onDateSelected(newDate.toDate()) },
+                        isExpanded = isExpanded.value,
+                        selectedRowIndex = selectedRowIndex,
+                        listState = listState,
+                        verticalSpacing = verticalSpacing
+                    )
+                }
+            }
+            IconButton(
+                onClick = { isExpanded.value = !isExpanded.value },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = if (isExpanded.value) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Expand/Collapse",
+                    tint = collapseButtonTint
                 )
             }
         }
 
-        IconButton(
-            onClick = { isExpanded.value = !isExpanded.value },
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Icon(
-                imageVector = if (isExpanded.value) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                contentDescription = "Expand/Collapse",
-                tint = headerAccentColor
-            )
-        }
+
     }
 }
 
