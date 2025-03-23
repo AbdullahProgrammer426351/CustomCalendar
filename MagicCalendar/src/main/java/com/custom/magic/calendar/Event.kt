@@ -1,7 +1,10 @@
 package com.custom.magic.calendar
 
+import android.content.Context
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
+import androidx.core.content.ContextCompat
 import com.custom.magic.calendar.sealed.EventIcon
 import com.custom.magic.calendar.sealed.EventIndicator
 import org.threeten.bp.LocalDate
@@ -28,7 +31,39 @@ data class Event(
         icon = icon,
         indicator = indicator
     )
+
+    constructor(
+        context: Context,
+        id: UUID = UUID.randomUUID(),
+        date: LocalDate,
+        @ColorRes eventColorRes: Int,
+        icon: EventIcon? = null,
+        indicator: EventIndicator? = null
+    ) : this(
+        id = id,
+        date = date,
+        eventColor = Color(ContextCompat.getColor(context, eventColorRes)),
+        icon = icon,
+        indicator = indicator
+    )
+
+    constructor(
+        context: Context,
+        id: UUID = UUID.randomUUID(),
+        date: Date,
+        @ColorRes eventColorRes: Int,
+        icon: EventIcon? = null,
+        indicator: EventIndicator? = null
+    ) : this(
+        context = context,
+        id = id,
+        date = date.toLocalDate(),
+        eventColorRes = eventColorRes,
+        icon = icon,
+        indicator = indicator
+    )
 }
+
 
 
 
