@@ -53,15 +53,15 @@ fun CalendarDayView(
 ) {
     Box(
         modifier = Modifier
-            .size(LocalConfiguration.current.screenWidthDp.dp / 7)
-            .clickable { onClick() },
+            .size(LocalConfiguration.current.screenWidthDp.dp / 7) ,
         contentAlignment = Alignment.Center
     ) {
         // Step 1: Background Box (Ensures selected/unselected styling)
         Box(
             modifier = Modifier
                 .size(38.dp)
-                .then(applySimpleDayStyle(if (isSelected) selectedDateBoxStyle else dateBoxStyle)),
+                .then(applySimpleDayStyle(if (isSelected) selectedDateBoxStyle else dateBoxStyle))
+                .clickable(enabled = isInCurrentMonth) { onClick() },
             contentAlignment = Alignment.Center
         ) {
             // Step 2: Draw indicators that should be in the middle layer (e.g., Circle, Rectangle, Ring)

@@ -74,8 +74,6 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
 
-
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -84,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
 
                     CalendarView(
-                        this@MainActivity, selectedDate.value, events,
+                        this@MainActivity, selectedDate.value, events, swipeEnabled = false,
 //                        selectedDayTextColor = Color.Green, dateBoxStyle = DateBoxStyle.FilledRectangle(color = Color.Gray)) { newDate ->
                         selectedDayTextColorRes = R.color.white, dateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray)) { newDate ->
                         viewModel.updateDate(newDate) // Ensure XML is updated

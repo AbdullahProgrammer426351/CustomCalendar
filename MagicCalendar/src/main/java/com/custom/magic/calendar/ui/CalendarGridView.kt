@@ -36,7 +36,7 @@ fun CalendarGridView(
     onDateSelected: (LocalDate) -> Unit,
     isExpanded: Boolean,
     selectedRowIndex: Int,
-    listState: LazyListState, // ✅ Accept LazyListState for smooth scroll,
+    listState: LazyListState,
     verticalSpacing: Dp,
     topSpacing: Dp,
     daysBarColor:Color
