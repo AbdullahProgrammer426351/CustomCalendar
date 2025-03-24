@@ -43,7 +43,7 @@ fun CalendarHeader(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CalendarTitle(currentMonth, headerFontStyle)
+            CalendarTitle(currentMonth, headerFontStyle, accentColor)
             Spacer(modifier = Modifier.weight(1f))
             NavigationButtons(prevIcon, nextIcon, onPrevious, onNext, accentColor)
         }
@@ -55,7 +55,7 @@ fun CalendarHeader(
         ) {
             NavigationButtons(prevIcon, nextIcon, onPrevious, onNext, accentColor)
             Spacer(modifier = Modifier.weight(1f))
-            CalendarTitle(currentMonth, headerFontStyle)
+            CalendarTitle(currentMonth, headerFontStyle, accentColor)
         }
 
         is HeaderStyle.TitleInCenter -> Row(
@@ -66,26 +66,27 @@ fun CalendarHeader(
         ) {
             Box(modifier = Modifier.clickable{onPrevious()}){ RenderIcon(prevIcon, accentColor) }
 
-            CalendarTitle(currentMonth, headerFontStyle)
+            CalendarTitle(currentMonth, headerFontStyle, accentColor)
 
             Box(modifier = Modifier.clickable{onNext()}){ RenderIcon(nextIcon, accentColor) }
         }
 
         HeaderStyle.WithoutButtons -> Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-            CalendarTitle(currentMonth, headerFontStyle)
+            CalendarTitle(currentMonth, headerFontStyle, accentColor)
         }
     }
 }
 
 
 @Composable
-fun CalendarTitle(currentMonth: LocalDate, headerFontStyle: HeaderFontStyle) {
+fun CalendarTitle(currentMonth: LocalDate, headerFontStyle: HeaderFontStyle, textColor:Color) {
     Text(
         text = currentMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())),
         fontSize = headerFontStyle.size,
         fontFamily = headerFontStyle.fontFamily,
         fontWeight = headerFontStyle.fontWeight,
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(8.dp),
+        color = textColor
     )
 }
 

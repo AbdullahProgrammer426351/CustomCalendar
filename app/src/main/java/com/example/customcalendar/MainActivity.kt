@@ -1,5 +1,6 @@
 package com.example.customcalendar
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -82,9 +83,10 @@ class MainActivity : AppCompatActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    CalendarView(selectedDate.value, events,
+                    CalendarView(
+                        this@MainActivity, selectedDate.value, events,
 //                        selectedDayTextColor = Color.Green, dateBoxStyle = DateBoxStyle.FilledRectangle(color = Color.Gray)) { newDate ->
-                        selectedDayTextColor = Color.Green, dateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray)) { newDate ->
+                        selectedDayTextColorRes = R.color.white, dateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray)) { newDate ->
                         viewModel.updateDate(newDate) // Ensure XML is updated
                     }
 

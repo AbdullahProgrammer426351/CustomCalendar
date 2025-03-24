@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import com.custom.magic.calendar.Event
 import com.custom.magic.calendar.sealed.DateBoxStyle
 import org.threeten.bp.LocalDate
+import java.text.DateFormatSymbols
+import java.util.Locale
 
 @Composable
 fun CalendarGridView(
@@ -35,27 +37,32 @@ fun CalendarGridView(
     isExpanded: Boolean,
     selectedRowIndex: Int,
     listState: LazyListState, // ✅ Accept LazyListState for smooth scroll,
-    verticalSpacing: Dp
+    verticalSpacing: Dp,
+    topSpacing: Dp,
+    daysBarColor:Color
 ) {
     val weeks = remember(selectedDate.value) { getWeeksInMonth(selectedDate.value) }
-    val displayWeeks = if (isExpanded) weeks else listOf(weeks[selectedRowIndex])
+     val displayWeeks = if (isExpanded) weeks else listOf(weeks[if (selectedRowIndex < 0) 0 else selectedRowIndex])
 
-    LazyColumn(state = listState) { // ✅ Use LazyColumn instead of Column
+    LazyColumn(state = listState, modifier = Modifier.padding(top = topSpacing)) { // ✅ Use LazyColumn instead of Column
         item {
             // Day headers
             Row(modifier = Modifier.fillMaxWidth()) {
-                listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat").forEach { day ->
+                getLocalizedWeekDays().forEach { day ->
                     Text(
-                        text = day,
+                        text = day.take(3),
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = daysBarColor
                     )
                 }
             }
         }
         items(displayWeeks) { week ->
-            Row(modifier = Modifier.fillMaxWidth().padding(top = if (week == displayWeeks[0]) 0.dp else verticalSpacing)) {
+            Row(modifier = Modifier.fillMaxWidth()
+                .padding(top = if (week == displayWeeks[0]) 0.dp else verticalSpacing)
+            ) {
                 week.forEach { date ->
                     Box(
                         modifier = Modifier
@@ -81,6 +88,12 @@ fun CalendarGridView(
             }
         }
     }
+}
+
+fun getLocalizedWeekDays(): List<String> {
+    val locale = Locale.getDefault() // Get user's default locale
+    val weekDays = DateFormatSymbols(locale).weekdays // Array with 8 elements (0 is empty)
+    return weekDays.toList().subList(1, 8) // Extract Sunday-Saturday
 }
 
 
