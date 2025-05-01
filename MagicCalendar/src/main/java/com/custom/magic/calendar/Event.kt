@@ -16,27 +16,51 @@ data class Event(
     val date: LocalDate,
     val eventColor: Color,
     val icon: EventIcon? = null,
-    val indicator: EventIndicator? = null
+    val indicator: EventIndicator? = null,
+    val textColor: Color = Color.White
 ) {
+    // Constructor using java.util.Date and direct Colors
     constructor(
         id: UUID = UUID.randomUUID(),
         date: Date,
         eventColor: Color,
         icon: EventIcon? = null,
-        indicator: EventIndicator? = null
+        indicator: EventIndicator? = null,
+        textColor: Color = Color.White
     ) : this(
         id = id,
         date = date.toLocalDate(),
         eventColor = eventColor,
         icon = icon,
-        indicator = indicator
+        indicator = indicator,
+        textColor = textColor
     )
 
+    // Constructor using Color resource for eventColor and default white text
     constructor(
         context: Context,
         id: UUID = UUID.randomUUID(),
         date: LocalDate,
         @ColorRes eventColorRes: Int,
+        icon: EventIcon? = null,
+        indicator: EventIndicator? = null,
+        textColor: Color = Color.White
+    ) : this(
+        id = id,
+        date = date,
+        eventColor = Color(ContextCompat.getColor(context, eventColorRes)),
+        icon = icon,
+        indicator = indicator,
+        textColor = textColor
+    )
+
+    // Constructor using resource for both eventColor and textColor
+    constructor(
+        context: Context,
+        id: UUID = UUID.randomUUID(),
+        date: LocalDate,
+        @ColorRes eventColorRes: Int,
+        @ColorRes textColorRes: Int,
         icon: EventIcon? = null,
         indicator: EventIndicator? = null
     ) : this(
@@ -44,14 +68,17 @@ data class Event(
         date = date,
         eventColor = Color(ContextCompat.getColor(context, eventColorRes)),
         icon = icon,
-        indicator = indicator
+        indicator = indicator,
+        textColor = Color(ContextCompat.getColor(context, textColorRes))
     )
 
+    // Constructor with java.util.Date and color resource IDs
     constructor(
         context: Context,
         id: UUID = UUID.randomUUID(),
         date: Date,
         @ColorRes eventColorRes: Int,
+        @ColorRes textColorRes: Int,
         icon: EventIcon? = null,
         indicator: EventIndicator? = null
     ) : this(
@@ -59,10 +86,12 @@ data class Event(
         id = id,
         date = date.toLocalDate(),
         eventColorRes = eventColorRes,
+        textColorRes = textColorRes,
         icon = icon,
         indicator = indicator
     )
 }
+
 
 
 

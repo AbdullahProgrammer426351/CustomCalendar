@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.custom.magic.calendar"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 23
@@ -75,7 +75,7 @@ publishing {
                 from(components["release"])
                 groupId = "com.custom.magic.calendar"
                 artifactId = "magic-calendar"
-                version = "1.14"
+                version = "1.15"
             }
         }
     }

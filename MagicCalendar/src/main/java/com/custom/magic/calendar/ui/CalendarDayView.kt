@@ -77,9 +77,16 @@ fun CalendarDayView(
             // Step 3: Draw the date text above the indicators
             Text(
                 text = date.dayOfMonth.toString(),
-                color = if (isSelected) selectedDayTextColor else {
-                    if (isInCurrentMonth) activeTextColor else inactiveTextColor
+                color = if (isSelected) {
+                    selectedDayTextColor
+                } else {
+                    if (isInCurrentMonth) {
+                        events.firstOrNull()?.textColor ?: activeTextColor
+                    } else {
+                        inactiveTextColor
+                    }
                 }
+
             )
         }
 

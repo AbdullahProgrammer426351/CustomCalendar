@@ -71,6 +71,7 @@ fun CalendarView(
     ),
     topSpacing: Dp = 20.dp,
     gridPadding: Dp = 4.dp,
+    showCollapsingButton: Boolean = true,
     onDateSelected: (Date) -> Unit
 ) {
     val verticalSpacing = 5.dp
@@ -138,8 +139,8 @@ fun CalendarView(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-            .clip(RoundedCornerShape(15.dp))
-            .background(bgColor)
+                .clip(RoundedCornerShape(15.dp))
+                .background(bgColor)
         ) {
             Box(
                 modifier = Modifier
@@ -174,15 +175,17 @@ fun CalendarView(
                     )
                 }
             }
-            IconButton(
-                onClick = { isExpanded.value = !isExpanded.value },
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Icon(
-                    imageVector = if (isExpanded.value) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Expand/Collapse",
-                    tint = collapseButtonTint
-                )
+            if (showCollapsingButton){
+                IconButton(
+                    onClick = { isExpanded.value = !isExpanded.value },
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isExpanded.value) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Expand/Collapse",
+                        tint = collapseButtonTint
+                    )
+                }
             }
         }
     }
@@ -223,6 +226,7 @@ fun CalendarView(
     ),
     topSpacing: Dp = 20.dp,
     gridPadding: Dp = 4.dp,
+    showCollapsingButton: Boolean = true,
     onDateSelected: (Date) -> Unit
 ) {
     // Convert resource IDs to Colors if provided
@@ -256,6 +260,7 @@ fun CalendarView(
         headerFontStyle = headerFontStyle,
         topSpacing = topSpacing,
         gridPadding = gridPadding,
+        showCollapsingButton = showCollapsingButton,
         onDateSelected = onDateSelected
     )
 }

@@ -1,21 +1,14 @@
 package com.example.customcalendar
 
-import android.content.Context
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,20 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import com.custom.magic.calendar.ui.CalendarView
 import com.custom.magic.calendar.Event
-import com.custom.magic.calendar.sealed.CalendarIcon
 import com.custom.magic.calendar.sealed.CircleType
 import com.custom.magic.calendar.sealed.DateBoxStyle
 import com.custom.magic.calendar.sealed.EventIcon
 import com.custom.magic.calendar.sealed.EventIndicator
-import com.custom.magic.calendar.sealed.HeaderStyle
 import com.custom.magic.calendar.sealed.IconPosition
-import com.custom.magic.calendar.sealed.RectangleType
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
@@ -84,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                     CalendarView(
                         this@MainActivity, selectedDate.value, events, swipeEnabled = false,
 //                        selectedDayTextColor = Color.Green, dateBoxStyle = DateBoxStyle.FilledRectangle(color = Color.Gray)) { newDate ->
-                        selectedDayTextColorRes = R.color.white, dateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray)) { newDate ->
+                        selectedDayTextColorRes = R.color.white, dateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray), showCollapsingButton = false) { newDate ->
                         viewModel.updateDate(newDate) // Ensure XML is updated
                     }
 
