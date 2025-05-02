@@ -64,13 +64,15 @@ fun CalendarDayView(
                 .clickable(enabled = isInCurrentMonth) { onClick() },
             contentAlignment = Alignment.Center
         ) {
-            // Step 2: Draw indicators that should be in the middle layer (e.g., Circle, Rectangle, Ring)
-            events.firstOrNull()?.indicator?.let { indicator ->
-                if (indicator is EventIndicator.Rectangle || indicator is EventIndicator.Circle || indicator is EventIndicator.Ring) {
-                    RenderEventIndicator(
-                        indicator,
-                        modifier = Modifier.matchParentSize()
-                    )
+            if(!isSelected) {
+                // Step 2: Draw indicators that should be in the middle layer (e.g., Circle, Rectangle, Ring)
+                events.firstOrNull()?.indicator?.let { indicator ->
+                    if (indicator is EventIndicator.Rectangle || indicator is EventIndicator.Circle || indicator is EventIndicator.Ring) {
+                        RenderEventIndicator(
+                            indicator,
+                            modifier = Modifier.matchParentSize()
+                        )
+                    }
                 }
             }
 

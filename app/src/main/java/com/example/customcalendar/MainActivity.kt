@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.custom.magic.calendar.ui.CalendarView
@@ -70,9 +71,12 @@ class MainActivity : AppCompatActivity() {
                 ) {
 
                     CalendarView(
-                        this@MainActivity, selectedDate.value, events, swipeEnabled = false,
+                        selectedDate.value, events, swipeEnabled = false,
+                        selectedDateBoxStyle = DateBoxStyle.FilledCircle(
+                            colorResource(R.color.red)
+                        ),
 //                        selectedDayTextColor = Color.Green, dateBoxStyle = DateBoxStyle.FilledRectangle(color = Color.Gray)) { newDate ->
-                        selectedDayTextColorRes = R.color.white, dateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray), showCollapsingButton = false) { newDate ->
+                        selectedDayTextColor = colorResource(R.color.white), dateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray), showCollapsingButton = false) { newDate ->
                         viewModel.updateDate(newDate) // Ensure XML is updated
                     }
 

@@ -1,7 +1,6 @@
 package com.custom.magic.calendar.ui
 
-import android.content.Context
-import androidx.annotation.ColorRes
+
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -190,79 +189,4 @@ fun CalendarView(
         }
     }
 }
-
-
-
-// Secondary method overrides
-@Composable
-fun CalendarView(
-    context: Context,
-    selectedDate: Date,
-    events: List<Event>,
-    headerStyle: HeaderStyle = HeaderStyle.TitleInCenter,
-    prevIcon: CalendarIcon = CalendarIcon.Vector(Icons.AutoMirrored.Filled.ArrowBack),
-    nextIcon: CalendarIcon = CalendarIcon.Vector(Icons.AutoMirrored.Filled.ArrowForward),
-    headerAccentColor: Color = Color.Black,
-    @ColorRes headerAccentColorRes: Int? = null,
-    activeTextColor: Color = Color.Black,
-    @ColorRes activeTextColorRes: Int? = null,
-    inactiveTextColor: Color = Color.Gray,
-    @ColorRes inactiveTextColorRes: Int? = null,
-    daysBarColor: Color = Color.Black,
-    @ColorRes daysBarColorRes: Int? = null,
-    dateBoxStyle: DateBoxStyle = DateBoxStyle.FilledCircle(color = Color.LightGray),
-    @ColorRes dateBoxColorRes: Int? = null,
-    selectedDateBoxStyle: DateBoxStyle = DateBoxStyle.FilledCircle(color = Color.Blue),
-    @ColorRes selectedDateBoxColorRes: Int? = null,
-    selectedDayTextColor: Color = Color.White,
-    @ColorRes selectedDayTextColorRes: Int? = null,
-    swipeEnabled: Boolean = true,
-    bgColor: Color = Color.White,
-    @ColorRes bgColorRes: Int? = null,
-    collapseButtonTint: Color = Color.Black,
-    @ColorRes collapseButtonTintRes: Int? = null,
-    headerFontStyle: HeaderFontStyle = HeaderFontStyle(
-        size = 20.sp, fontFamily = FontFamily.Default, fontWeight = FontWeight.Bold
-    ),
-    topSpacing: Dp = 20.dp,
-    gridPadding: Dp = 4.dp,
-    showCollapsingButton: Boolean = true,
-    onDateSelected: (Date) -> Unit
-) {
-    // Convert resource IDs to Colors if provided
-    val headerAccentColorFinal = headerAccentColorRes?.let { Color(ContextCompat.getColor(context, it)) } ?: headerAccentColor
-    val activeTextColorFinal = activeTextColorRes?.let { Color(ContextCompat.getColor(context, it)) } ?: activeTextColor
-    val inactiveTextColorFinal = inactiveTextColorRes?.let { Color(ContextCompat.getColor(context, it)) } ?: inactiveTextColor
-    val daysBarColorFinal = daysBarColorRes?.let { Color(ContextCompat.getColor(context, it)) } ?: daysBarColor
-    val dateBoxColorFinal = dateBoxColorRes?.let { Color(ContextCompat.getColor(context, it)) } ?: (dateBoxStyle as? DateBoxStyle.FilledCircle)?.color ?: Color.LightGray
-    val selectedDateBoxColorFinal = selectedDateBoxColorRes?.let { Color(ContextCompat.getColor(context, it)) } ?: (selectedDateBoxStyle as? DateBoxStyle.FilledCircle)?.color ?: Color.Blue
-    val selectedDayTextColorFinal = selectedDayTextColorRes?.let { Color(ContextCompat.getColor(context, it)) } ?: selectedDayTextColor
-    val bgColorFinal = bgColorRes?.let { Color(ContextCompat.getColor(context, it)) } ?: bgColor
-    val collapseButtonTintFinal = collapseButtonTintRes?.let { Color(ContextCompat.getColor(context, it)) } ?: collapseButtonTint
-
-    // Call the main CalendarView with resolved colors
-    CalendarView(
-        selectedDate = selectedDate,
-        events = events,
-        headerStyle = headerStyle,
-        prevIcon = prevIcon,
-        nextIcon = nextIcon,
-        headerAccentColor = headerAccentColorFinal,
-        activeTextColor = activeTextColorFinal,
-        inactiveTextColor = inactiveTextColorFinal,
-        daysBarColor = daysBarColorFinal,
-        dateBoxStyle = DateBoxStyle.FilledCircle(color = dateBoxColorFinal),
-        selectedDateBoxStyle = DateBoxStyle.FilledCircle(color = selectedDateBoxColorFinal),
-        selectedDayTextColor = selectedDayTextColorFinal,
-        swipeEnabled = swipeEnabled,
-        bgColor = bgColorFinal,
-        collapseButtonTint = collapseButtonTintFinal,
-        headerFontStyle = headerFontStyle,
-        topSpacing = topSpacing,
-        gridPadding = gridPadding,
-        showCollapsingButton = showCollapsingButton,
-        onDateSelected = onDateSelected
-    )
-}
-
 
